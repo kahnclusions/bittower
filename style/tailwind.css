@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+}
+
+* { -webkit-font-smoothing: antialiased; }
+
+@layer base {
+  @font-face {
+    font-family: 'Silkscreen';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Silkscreen/Silkscreen-regular.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Playfair';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'NotoSansTC';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Noto_Sans_TC/NotoSansTC-VariableFont_wght.ttf) format('truetype');
+  }
+}
