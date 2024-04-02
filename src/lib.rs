@@ -1,6 +1,9 @@
 pub mod app;
+pub mod components;
 pub mod error_template;
 pub mod qbt;
+pub mod routes;
+
 #[cfg(feature = "ssr")]
 pub mod fileserv;
 

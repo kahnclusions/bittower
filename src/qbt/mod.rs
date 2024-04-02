@@ -1,9 +1,12 @@
+pub mod sync;
 pub mod torrents;
+pub mod transfer;
 
 use http::header::COOKIE;
 use serde_json::Value;
 
-use self::torrents::{MainData, SyncMainDataFull, SyncMainDataPartial, TorrentSummary};
+use self::sync::{MainData, SyncMainDataFull, SyncMainDataPartial};
+use self::torrents::TorrentSummary;
 
 pub static BASE_QBT_URL: &str = "http://localhost:9090/api/v2";
 pub static TORRENTS_API: &str = "/torrents";
@@ -18,7 +21,8 @@ pub async fn get_torrents_info(sid: String) -> Result<Vec<TorrentSummary>, reqwe
     // let cookie: Cookie = Cookie::build(("SID", sid)).build();
 
     // Make an initial request to set some cookies
-    let response = client.get(url)
+    let response = client
+        .get(url)
         .header(COOKIE, format!("SID={}", sid).to_string())
         .send()
         .await?;
@@ -33,7 +37,8 @@ pub async fn get_sync_maindata(sid: String, rid: u64) -> Result<MainData, reqwes
     // let cookie: Cookie = Cookie::build(("SID", sid)).build();
 
     // Make an initial request to set some cookies
-    let response = client.get(url)
+    let response = client
+        .get(url)
         .header(COOKIE, format!("SID={}", sid).to_string())
         .send()
         .await?;
@@ -41,9 +46,9 @@ pub async fn get_sync_maindata(sid: String, rid: u64) -> Result<MainData, reqwes
     let data = response.json::<Value>().await?;
     let is_full_update = match data.get("full_update") {
         Some(full_update) => serde_json::from_value(full_update.to_owned()).unwrap(),
-        None => false
+        None => false,
     };
-    
+
     if is_full_update == true {
         let data: SyncMainDataFull = serde_json::from_value(data).unwrap();
         Ok(MainData::Full(data))
