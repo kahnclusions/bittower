@@ -1,85 +1,82 @@
-use std::collections::HashMap;
-
-use leptos::{ReadSignal, RwSignal, Signal};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TorrentStatus {
     #[serde(rename = "error")]
     /// Some error occurred, applies to paused torrents
-    Error(String),
+    Error,
 
     #[serde(rename = "missingFiles")]
     /// Torrent data files is missing
-    MissingFiles(String),
+    MissingFiles,
 
     #[serde(rename = "uploading")]
     /// Torrent is being seeded and data is being transferred
-    Uploading(String),
+    Uploading,
 
     #[serde(rename = "pausedUP")]
     /// Torrent is paused and has finished downloading
-    PausedUP(String),
+    PausedUP,
 
     #[serde(rename = "queuedUP")]
     /// Queuing is enabled and torrent is queued for upload
-    QueuedUP(String),
+    QueuedUP,
 
     #[serde(rename = "stalledUP")]
     /// Torrent is being seeded, but no connection were made
-    StalledUP(String),
+    StalledUP,
 
     #[serde(rename = "checkingUP")]
     /// Torrent has finished downloading and is being checked
-    CheckingUP(String),
+    CheckingUP,
 
     #[serde(rename = "forcedUP")]
     /// Torrent is forced to uploading and ignore queue limit
-    ForcedUP(String),
+    ForcedUP,
 
     #[serde(rename = "allocating")]
     /// Torrent is allocating disk space for download
-    Allocating(String),
+    Allocating,
 
     #[serde(rename = "downloading")]
     /// Torrent is being downloaded and data is being transferred
-    Downloading(String),
+    Downloading,
 
     #[serde(rename = "metaDL")]
     /// Torrent has just started downloading and is fetching metadata
-    MetaDL(String),
+    MetaDL,
 
     #[serde(rename = "pausedDL")]
     /// Torrent is paused and has NOT finished downloading
-    PausedDL(String),
+    PausedDL,
 
     #[serde(rename = "queuedDL")]
     /// Queuing is enabled and torrent is queued for download
-    QueuedDL(String),
+    QueuedDL,
 
     #[serde(rename = "stalledDL")]
     /// Torrent is being downloaded, but no connection were made
-    StalledDL(String),
+    StalledDL,
 
     #[serde(rename = "checkingDL")]
     /// Same as checkingUP, but torrent has NOT finished downloading
-    CheckingDL(String),
+    CheckingDL,
 
     #[serde(rename = "forcedDL")]
     /// Torrent is forced to downloading to ignore queue limit
-    ForcedDL(String),
+    ForcedDL,
 
     #[serde(rename = "checkingResumeData")]
     /// Checking resume data on qBt startup
-    CheckingResumeData(String),
+    CheckingResumeData,
 
     #[serde(rename = "moving")]
     /// Torrent is moving to another location
-    Moving(String),
+    Moving,
 
     #[serde(rename = "unknown")]
     /// Unknown status
-    Unknown(String),
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -87,6 +84,7 @@ pub struct TorrentSummary {
     pub name: String,
     pub infohash_v1: String,
     pub progress: f64,
+    pub state: TorrentStatus,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -94,6 +92,7 @@ pub struct TorrentSummaryPartial {
     pub name: Option<String>,
     pub infohash_v1: Option<String>,
     pub progress: Option<f64>,
+    pub state: Option<TorrentStatus>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

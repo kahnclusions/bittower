@@ -31,11 +31,12 @@ pub struct ServerState {
 pub fn ServerStateBar(state: ServerState) -> impl IntoView {
     let dl_speed = move || human_bytes(state.dl_info_speed.get());
     let ul_speed = move || human_bytes(state.up_info_speed.get());
+    let status = move || state.connection_status.with(|s| s.to_string());
     view! {
         <div class="flex flex-row gap-3 justify-between items-center">
-            <div>{move || state.connection_status.get().to_string()}</div>
-            <div>DL: {move || dl_speed()}</div>
-            <div>UP: {move || ul_speed()}</div>
+            <div>{status}</div>
+            <div>DL: {dl_speed}</div>
+            <div>UP: {ul_speed}</div>
         </div>
     }
 }
@@ -71,6 +72,7 @@ pub fn HomePage() -> impl IntoView {
                                     hash: hash.clone(),
                                     name: create_rw_signal(torrent.name),
                                     progress: create_rw_signal(torrent.progress),
+                                    state: create_rw_signal(torrent.state),
                                 },
                             );
                         }
@@ -91,8 +93,11 @@ pub fn HomePage() -> impl IntoView {
                         if let Some(partial_torrents) = partial_data.torrents {
                             for (hash, torrent) in partial_torrents {
                                 if let Some(ts) = torrents.get_untracked().get_mut(&hash) {
-                                    if let Some(progress) = torrent.progress {
-                                        ts.progress.set(progress);
+                                    if let Some(value) = torrent.progress {
+                                        ts.progress.set(value);
+                                    }
+                                    if let Some(value) = torrent.state {
+                                        ts.state.set(value);
                                     }
                                 }
                             }
