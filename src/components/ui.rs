@@ -7,7 +7,11 @@ pub fn Container(children: Children) -> impl IntoView {
 
 #[component]
 pub fn Card(children: Children) -> impl IntoView {
-    view! { <div class="p-3 border border-4 border-slate-500">{children()}</div> }
+    view! {
+        <div class="p-3 border border-4 border-slate-500 bg-slate-50 dark:bg-slate-950">
+            {children()}
+        </div>
+    }
 }
 
 #[component]

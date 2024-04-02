@@ -28,16 +28,12 @@ pub struct ServerState {
 }
 
 #[component]
-pub fn ServerStateBar(
-    connection_status: RwSignal<ConnectionStatus>,
-    dl_info_speed: RwSignal<f64>,
-    up_info_speed: RwSignal<f64>,
-) -> impl IntoView {
-    let dl_speed = move || human_bytes(dl_info_speed());
-    let ul_speed = move || human_bytes(up_info_speed());
+pub fn ServerStateBar(state: ServerState) -> impl IntoView {
+    let dl_speed = move || human_bytes(state.dl_info_speed.get());
+    let ul_speed = move || human_bytes(state.up_info_speed.get());
     view! {
         <div class="flex flex-row gap-3 justify-between items-center">
-            <div>{move || connection_status().to_string()}</div>
+            <div>{move || state.connection_status.get().to_string()}</div>
             <div>DL: {move || dl_speed()}</div>
             <div>UP: {move || ul_speed()}</div>
         </div>
@@ -125,7 +121,7 @@ pub fn HomePage() -> impl IntoView {
 
     view! {
         <h1 class="bg-slate-50 dark:bg-slate-900 font-display text-2xl text-center h-10 flex flex-row items-center justify-center">
-            "Hello, world!"
+            "bit-tower"
         </h1>
         <Container>
             <Stack>
@@ -144,11 +140,7 @@ pub fn HomePage() -> impl IntoView {
                     <TorrentCard torrent=child/>
                 </For>
             </Stack>
-            <ServerStateBar
-                connection_status=server_state.connection_status
-                dl_info_speed=server_state.dl_info_speed
-                up_info_speed=server_state.up_info_speed
-            />
+            <ServerStateBar state=server_state/>
         </Container>
     }
 }
