@@ -1,5 +1,9 @@
 use std::collections::HashMap;
 
+use icondata as i;
+use leptos::leptos_dom::logging::console_log;
+use leptos_icons::*;
+
 use crate::components::ui::Container;
 use crate::qbt::get_sync_maindata;
 use crate::qbt::transfer::ConnectionStatus;
@@ -31,10 +35,16 @@ pub struct ServerState {
 pub fn ServerStateBar(state: ServerState) -> impl IntoView {
     let dl_speed = move || human_bytes(state.dl_info_speed.get());
     let ul_speed = move || human_bytes(state.up_info_speed.get());
-    let status = move || state.connection_status.with(|s| s.to_string());
+    let icon = move || {
+        state.connection_status.with(|status| match status {
+            ConnectionStatus::Connected => i::FiWifi,
+            ConnectionStatus::Firewalled => i::TbWall,
+            ConnectionStatus::Disconnected => i::FiWifiOff,
+        })
+    };
     view! {
-        <div class="flex flex-row gap-3 justify-between items-center">
-            <div>{status}</div>
+        <div class="flex flex-row gap-3 justify-between items-center border-top border-t-[2px] border-t-slate-300 dark:border-t-slate-700 bg-slate-50 dark:bg-slate-950 p-1">
+            <div>{move || view! { <Icon icon=icon()/> }}</div>
             <div>DL: {dl_speed}</div>
             <div>UP: {ul_speed}</div>
         </div>
@@ -125,27 +135,29 @@ pub fn HomePage() -> impl IntoView {
     );
 
     view! {
-        <h1 class="bg-slate-50 dark:bg-slate-900 font-display text-2xl text-center h-10 flex flex-row items-center justify-center">
-            "bit-tower"
-        </h1>
-        <Container>
-            <Stack>
-                <For
-                    each=move || {
-                        let torrents: Vec<Torrent> = torrents()
-                            .into_iter()
-                            .map(|(_, torrent)| torrent)
-                            .collect();
-                        torrents
-                    }
+        <Stack class=Some("gap-0 h-full justify-between".to_string())>
+            <h1 class="bg-slate-50 dark:bg-slate-900 font-display text-2xl text-center h-10 flex flex-row items-center justify-center">
+                "bit-tower"
+            </h1>
+            <Container class=Some("grow overflow-y-auto overflow-x-hidden".to_string())>
+                <Stack class=None>
+                    <For
+                        each=move || {
+                            let torrents: Vec<Torrent> = torrents()
+                                .into_iter()
+                                .map(|(_, torrent)| torrent)
+                                .collect();
+                            torrents
+                        }
 
-                    key=|t| t.hash.clone()
-                    let:child
-                >
-                    <TorrentCard torrent=child/>
-                </For>
-            </Stack>
+                        key=|t| t.hash.clone()
+                        let:child
+                    >
+                        <TorrentCard torrent=child/>
+                    </For>
+                </Stack>
+            </Container>
             <ServerStateBar state=server_state/>
-        </Container>
+        </Stack>
     }
 }
